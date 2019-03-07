@@ -1,0 +1,102 @@
+<launch>
+    <!--Variaveis-->
+    <arg name="gravar" default="false"/>
+    <arg name="bag" default="lab2.bag"/>
+    <arg name="local" default="/home/luiz/ZED_WS/build/BAGS"/>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+    <!--Usando ASTRA SOMENTE-->
+    <arg name="rgb_camera_info" value="/camera/rgb/camera_info"/>
+    <arg name="rgb_rimg_ect" value="/camera/rgb/image_rect_color"/>
+    <arg name="depReg_imgrect" value="/camera/depth/image_rect"/>
+    <arg name="out_cloud" value="camera/depth_registered/points"/>
+
+    <include file="$(find astra_launch)/launch/astra.launch">
+    </include>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+    <node name="sync_pkg" pkg="sync_pkg" type="sync_node" output="screen">
+    </node>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+<!--    <node name="sincroniza_odom" pkg="zed_package" type="sincroniza_odom" output="screen">
+    </node>-->
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+    <node name="viewer" pkg="zed_package" type="viewer" output="screen">
+    </node>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+    <node pkg="nodelet" type="nodelet" name="standalone_nodelet" args="manager" output="screen"/>
+
+    <node pkg="nodelet" type="nodelet" name="points_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet" output="screen">
+        <remap from="rgb/camera_info" to="$(arg rgb_camera_info)" />
+        <remap from="rgb/image_rect_color" to="$(arg rgb_rimg_ect)"/>
+        <remap from="depth_registered/image_rect" to="$(arg depReg_imgrect)"/>
+        <remap from="depth_registered/points" to="$(arg out_cloud)"/>
+    </node>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+
+    <group if="$(arg gravar)">
+    <node name="rosbag_record_zed" pkg="rosbag" type="record" output="screen" args="/zed/left/image_rect_color/compressed -O $(arg local)/$(arg bag)">
+    </node>
+    </group>
+
+    <!--Usando ELASTIC FUSION-->
+<!--    <include file="/home/luiz/PCL_WS/src/pcl_package/pcl_node_launch.launch">-->
+    <!--<include file="$(find pcl_package)/pcl_node_launch.launch">
+    </include>-->
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+    <include file="$(find zed_wrapper)/launch/zed.launch">
+    </include>
+
+    <arg name="pi/2" value="1.5707963267948966"/>
+    <arg name="astra2zed" value="0 0 0 0.0 -$(arg pi/2) $(arg pi/2)"/>
+<!--    <arg name="astra2zed" value="0 0 0 0.0 0.0 0"/>-->
+
+    <node pkg="tf" type="static_transform_publisher" name="base_astra_to_zed" args="$(arg astra2zed) camera_rgb_optical_frame zed_current_frame 5"/>
+
+    <node name="zed_node" pkg="zed_package" type="zed_node" output="screen">
+    </node>
+
+    <!--
+    ===============================================================
+    ===============================================================
+    -->
+</launch>

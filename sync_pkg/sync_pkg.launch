@@ -1,0 +1,4 @@
+<launch>
+<node name="sync_pkg" pkg="sync_pkg" type="sync_node" output="screen">
+</node>
+</launch>
