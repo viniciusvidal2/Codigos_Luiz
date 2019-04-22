@@ -57,9 +57,9 @@ include_directories(
  ${OpenCV_INCLUDE_DIRS}
 )
 
-add_executable(sync_node sync_node.cpp)
+add_executable(sync_node2 sync_node.cpp)
 ## Specify libraries to link a library or executable target against
- target_link_libraries(sync_node
+ target_link_libraries(sync_node2
    ${catkin_LIBRARIES}
    ${PCL_LIBRARIES}
    ${OpenCV_LIBS}

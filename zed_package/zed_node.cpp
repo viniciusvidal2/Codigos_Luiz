@@ -236,9 +236,9 @@ void acumular_nuvem(const sensor_msgs::PointCloud2ConstPtr& msg_ptc_ef, const se
     transformPointCloud<PointT>(*nuvem_ef, *nuvem_transformada, Tc);
 
     //// Filtrar a regiao da nuvem que passa
-    passthrough(nuvem_transformada, "z", -1,  1.2); // Vertical
-    passthrough(nuvem_transformada, "x",  0, 3.2); // Profundidade
-    passthrough(nuvem_transformada, "y", -1,  1); // Horizontal
+    passthrough(nuvem_transformada, "z", -3,  2.2); // Vertical
+    passthrough(nuvem_transformada, "x",  0, 5.2); // Profundidade
+    passthrough(nuvem_transformada, "y", -3,  2.1); // Horizontal
 
     /// Obter a odometria da mensagem
     // Rotacao

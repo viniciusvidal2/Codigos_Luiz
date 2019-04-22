@@ -235,9 +235,9 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Imag
   int aux = 0;
   cv::Vec3b intensity;
 
-  for(int v = 0; v < depthHeight; v=v+1)
+  for(int v = 0; v < depthHeight; v=v+2)
   {
-    for(int u = 0; u < depthWidth; u=u+1)
+    for(int u = 0; u < depthWidth; u=u+2)
     {
 
       float x, y, z;
